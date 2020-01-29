@@ -37,7 +37,7 @@ import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.repositories
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.File
-import java.util.Locale
+import java.util.*
 import java.util.Locale.US
 
 internal const val TAG = "Keeper"
@@ -128,6 +128,9 @@ class KeeperPlugin : Plugin<Project> {
 
         appExtension.testVariants.configureEach {
           val appVariant = testedVariant
+          if (!appVariant.buildType.isMinifyEnabled) {
+            return@configureEach
+          }
           val intermediateAndroidTestJar = createIntermediateAndroidTestJar(this, appVariant)
           val intermediateAppJar = createIntermediateAppJar(appVariant)
           val inferAndroidTestUsageProvider = tasks.register(
